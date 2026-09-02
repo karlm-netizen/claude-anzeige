@@ -1,0 +1,21 @@
+{
+  "anwendungs_id": "1544350360695480330",
+  "prozess": "claude.exe",
+  "aktivitaets_art": "PLAYING",
+  "agenten_zeigen": true,
+  "immer_arbeiten": true,
+  "wartet_text": "wartet",
+  "bild_schluessel": "claude",
+  "bild_text": "Claude Code",
+  "takt_sekunden": 15,
+  "woerter": [
+    "Calculating", "Computing", "Honking", "Wandering", "Pondering",
+    "Simmering", "Noodling", "Puzzling", "Musing", "Percolating",
+    "Ruminating", "Thinking", "Cogitating", "Brewing", "Conjuring",
+    "Deliberating", "Finagling", "Herding", "Ideating", "Inferring",
+    "Manifesting", "Marinating", "Moseying", "Mulling", "Processing",
+    "Reticulating", "Schlepping", "Shucking", "Spelunking", "Stewing",
+    "Synthesizing", "Transmuting", "Vibing", "Whirring", "Baking",
+    "Channelling", "Crafting", "Divining", "Envisioning", "Forging"
+  ]
+}
