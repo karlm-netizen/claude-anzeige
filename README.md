@@ -8,6 +8,7 @@ sind dabei?**
 | `presence.py` | Discord Rich Presence — steht auf dem Profil |
 | `fenster.py` | Fenster am PC, animiert, immer obenauf |
 | `agenten.py` | die gemeinsame Erkennung. Direkt aufrufbar: `python agenten.py` |
+| `agenten-pruefen.py` | **prüft, ob die Anzeige noch die Wahrheit sagt.** Doppelklick: `Agenten pruefen.cmd` |
 
 ```
 Discord                        Fenster am PC
@@ -163,6 +164,59 @@ Sagt in vier Zeilen, was beide Anzeigen sehen. Dazu für die Presence:
 ```
 type presence.log
 ```
+
+## 🔍 Läuft die Anzeige noch — oder lügt sie nur? (09.09.2026)
+
+**Karls Ansage:** *„Besser überprüfen können ob die Agenten noch laufen."*
+
+```
+python agenten-pruefen.py          alles prüfen
+python agenten-pruefen.py --raeumen  verwaiste Merker zusätzlich löschen
+```
+Zum Doppelklicken: **`Agenten pruefen.cmd`** — das Fenster bleibt danach offen.
+
+🔴 **Warum `python agenten.py` dafür nicht reicht.** Es sagt *„Agenten: 0"*, und das
+heißt zweierlei:
+
+| | |
+|---|---|
+| **(a)** | gerade läuft wirklich keiner — normal |
+| **(b)** | der Melde-Weg ist kaputt und meldet nie mehr etwas — **still** |
+
+**Von außen sehen (a) und (b) identisch aus.** Ein Agent hat keinen eigenen Prozess
+(nachgemessen am 01.09.2026), es gibt also nichts, woran man (b) erkennen könnte —
+außer man prüft den Melde-Weg selbst. Genau das tut `agenten-pruefen.py`: es ruft
+`agent-merker.ps1` so auf, wie Claude Code es tut, und sieht nach, ob wirklich etwas
+entsteht.
+
+**Fünf Dinge werden geprüft:**
+
+1. **Die Teile** — liegt `agent-merker.ps1` da, gibt es den Merker-Ordner?
+2. **Die Hooks** — stehen alle fünf in `settings.json`, jeder mit dem richtigen Schalter?
+   Zu jedem fehlenden steht dabei, **was er kaputt macht** (ohne `SubagentStop` etwa
+   hängen fertige Agenten bis zu drei Stunden als „läuft noch").
+3. **Der Melde-Weg, wirklich aufgerufen** — `-Start` muss eine Datei anlegen, `agenten.py`
+   muss sie sehen, `-Ende` muss sie wegräumen und in den Verlauf schreiben. Der Testeintrag
+   wird danach wieder entfernt.
+4. **Verwaiste Merker** — Dateien, die stehengeblieben sind, obwohl kein Claude mehr läuft.
+5. **Wann zuletzt ein Agent lief** — über drei Tage ohne Lauf gibt einen Hinweis.
+
+### ⚠️ Ein Fehler, der beim ersten Lauf gleich mitkam
+
+Die Prüfung meldete *„letzter Agentenlauf: gerade eben"* — **das war sie selbst.** Sie las
+das Änderungsdatum von `verlauf.jsonl`, in das ihr eigener Selbsttest zwei Zeilen vorher
+geschrieben hatte. Der letzte echte Lauf war vom 06.09.
+➡️ Behoben: der Zeitpunkt kommt jetzt aus dem **Inhalt** (`beendet`-Feld), nicht aus dem
+Dateidatum. **Eine Prüfung, die ihre eigene Messung verfälscht, ist schlimmer als keine.**
+
+### Die Gegenprobe
+
+`pruefungen/agenten-pruefung-gegenprobe.py` — sie biegt die Konstanten im geladenen Modul
+um und stellt vier Schadensfälle nach: fehlender Hook · `settings.json` ohne den Merker ·
+fehlendes Skript · **ein Skript, das da ist, aber nichts schreibt.** Alle vier müssen als
+`FEHLER` herauskommen.
+💡 **Ohne diese Probe wüsste man nur, dass die Prüfung „OK" sagen kann** — nicht, dass sie
+überhaupt in der Lage ist, „FEHLER" zu sagen.
 
 ## Voraussetzungen
 
